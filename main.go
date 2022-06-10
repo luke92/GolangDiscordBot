@@ -95,15 +95,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Content == "!vote" {
+	if m.Content == "/vote" {
 		voteCommand(s, m)
 	}
 
-	if m.Content == "!project" {
+	if m.Content == "/project" {
 		projectCommand(s, m)
 	}
 
-	if m.Content == "!projectleaderboard" {
+	if m.Content == "/projectleaderboard" {
 		projectLeaderboard(s, m)
 	}
 }

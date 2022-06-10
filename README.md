@@ -48,4 +48,4 @@ task: [bot] ./bin/modak-test-vote-bot-discord -t $BOT_TOKEN -api $API_URL
 Bot is now running.  Press CTRL-C to exit.
 ```
 
-Now you can tape `!vote`, `!project` and `!projectleaderboard` in the Discord server connected to the Bot :).
+Now you can tape `/vote`, `/project` and `/projectleaderboard` in the Discord server connected to the Bot :).
