@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sort"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/google/uuid"
 )
 
 /*
@@ -24,14 +27,28 @@ type VoteResponse struct {
 
 // Variables used for command line parameters
 var (
-	Token   string
-	API_URL string
+	Token      string
+	API_URL    string
+	PREFIX     string
+	Categories []string
+	Projects   []string
 )
 
 //const KuteGoAPIURL = "https://kutego-api-xxxxx-ew.a.run.app"
 //const API_URL = https://9f801b5b-d44a-497f-8405-3b7d687a0cd3.mock.pstmn.io
 
 func init() {
+	PREFIX = "!"
+	Categories = []string{
+		"CODING",
+		"ART",
+		"OTHER",
+		"FOOD",
+		"FASHION",
+	}
+	Projects = []string{
+		"3476e206-56b3-48e6-89bc-72e8f25906d3. New Idea. Description of idea",
+	}
 	//Receive parameters from arguments
 	flag.StringVar(&Token, "t", "", "Bot Token")
 	flag.StringVar(&API_URL, "api", "", "BASE API URL")
@@ -95,29 +112,46 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Content == "/vote" {
+	if strings.HasPrefix(m.Content, PREFIX+"vote") {
 		voteCommand(s, m)
 	}
 
-	if m.Content == "/project" {
+	if strings.HasPrefix(m.Content, PREFIX+"project") {
 		projectCommand(s, m)
 	}
 
-	if m.Content == "/projectleaderboard" {
+	if strings.HasPrefix(m.Content, PREFIX+"leaderboard") {
 		projectLeaderboard(s, m)
 	}
 }
 
 func voteCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
-	sendMessageTextToChannel(s, m, "You are voting")
+	values := getValuesFromCommand(m.Content)
+	message := ""
+	if len(values) == 1 {
+		message = "You are not enter a Project ID"
+	} else if !IsValidUUID(values[1]) {
+		message = "You are not enter a valid Project ID"
+	} else {
+		message = "You are vote the project " + values[1] + ".The new total amount of votes for the project is 1."
+	}
+	sendMessageTextToChannel(s, m, message)
 }
 
 func projectCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
-	sendMessageTextToChannel(s, m, "You are getting values of Project")
+	values := getValuesFromCommand(m.Content)
+	message := Projects[0]
+	if len(values) > 1 {
+		category := strings.ToUpper(values[1])
+		if !contains(Categories, category) {
+			message = "You not enter a valid category"
+		}
+	}
+	sendMessageTextToChannel(s, m, message)
 }
 
 func projectLeaderboard(s *discordgo.Session, m *discordgo.MessageCreate) {
-	sendMessageTextToChannel(s, m, "Leaderboard")
+	sendMessageTextToChannel(s, m, Projects[0])
 }
 
 func sendMessageTextToChannel(s *discordgo.Session, m *discordgo.MessageCreate, content string) {
@@ -125,4 +159,20 @@ func sendMessageTextToChannel(s *discordgo.Session, m *discordgo.MessageCreate, 
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func IsValidUUID(u string) bool {
+	_, err := uuid.Parse(u)
+	return err == nil
+}
+
+func getValuesFromCommand(content string) []string {
+	inputMessage := strings.TrimSpace(content)
+	values := strings.Split(inputMessage, " ")
+	return values
+}
+
+func contains(s []string, searchterm string) bool {
+	i := sort.SearchStrings(s, searchterm)
+	return i < len(s) && s[i] == searchterm
 }
