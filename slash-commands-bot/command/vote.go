@@ -49,50 +49,36 @@ func VoteCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	message := ""
 	allOptionsIsOk := true
 	optionsValue := []string{}
+	value := ""
 	// Get the value from the option map.
 	// When the option exists, ok = true
 	if option, ok := optionMap[project_uuid_option_name1]; ok {
-		// Option values must be type asserted from interface{}.
-		// Discordgo provides utility functions to make this simple.
-		optionValue := option.StringValue()
-
-		if !isValidUUID(optionValue) {
-			message += "The Project ID " + optionValue + "isn't a valid ID. \n"
-			allOptionsIsOk = false
-		} else {
-			optionsValue = append(optionsValue, optionValue)
+		value = option.StringValue()
+		messageValidation, isValid := validateOption(value, optionsValue)
+		message += messageValidation
+		allOptionsIsOk = allOptionsIsOk && isValid
+		if isValid {
+			optionsValue = append(optionsValue, value)
 		}
 	}
 
 	if option, ok := optionMap[project_uuid_option_name2]; ok {
-		// Option values must be type asserted from interface{}.
-		// Discordgo provides utility functions to make this simple.
-		optionValue := option.StringValue()
-
-		if !isValidUUID(optionValue) {
-			message += "The Project ID " + optionValue + "isn't a valid ID. \n"
-			allOptionsIsOk = false
-		} else if contains(optionsValue, optionValue) {
-			message += "You cannot repeat the project ID " + optionValue + ". Enter other Project ID\n"
-			allOptionsIsOk = false
-		} else {
-			optionsValue = append(optionsValue, optionValue)
+		value = option.StringValue()
+		messageValidation, isValid := validateOption(value, optionsValue)
+		message += messageValidation
+		allOptionsIsOk = allOptionsIsOk && isValid
+		if isValid {
+			optionsValue = append(optionsValue, value)
 		}
 	}
 
 	if option, ok := optionMap[project_uuid_option_name3]; ok {
-		// Option values must be type asserted from interface{}.
-		// Discordgo provides utility functions to make this simple.
-		optionValue := option.StringValue()
-
-		if !isValidUUID(optionValue) {
-			message += "The Project ID " + optionValue + " isn't a valid ID. \n"
-			allOptionsIsOk = false
-		} else if contains(optionsValue, optionValue) {
-			message += "You cannot repeat the project ID " + optionValue + ". Enter other Project ID\n"
-			allOptionsIsOk = false
-		} else {
-			optionsValue = append(optionsValue, optionValue)
+		value = option.StringValue()
+		messageValidation, isValid := validateOption(value, optionsValue)
+		message += messageValidation
+		allOptionsIsOk = allOptionsIsOk && isValid
+		if isValid {
+			optionsValue = append(optionsValue, value)
 		}
 	}
 
@@ -102,12 +88,24 @@ func VoteCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		}
 	}
 
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: message,
 		},
 	})
+}
+
+func validateOption(value string, optionsValue []string) (string, bool) {
+	if !isValidUUID(value) {
+		message := "The Project ID " + value + " isn't a valid ID. \n"
+		return message, false
+	} else if contains(optionsValue, value) {
+		message := "You cannot repeat the project ID " + value + ". Enter other Project ID\n"
+		return message, false
+	} else {
+		return "", true
+	}
 }
 
 func isValidUUID(u string) bool {

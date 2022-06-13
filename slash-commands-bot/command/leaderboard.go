@@ -12,7 +12,7 @@ var LeaderboardCommand = discordgo.ApplicationCommand{
 }
 
 func LeaderboardCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: Leaderboard[0],

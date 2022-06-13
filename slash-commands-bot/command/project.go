@@ -60,7 +60,7 @@ func ProjectCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		message = Projects[0]
 	}
 
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: message,
