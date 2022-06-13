@@ -5,7 +5,9 @@ import (
 	"github.com/google/uuid"
 )
 
-var project_uuid_option_name = "project_uuid"
+var project_uuid_option_name1 = "project_uuid_1"
+var project_uuid_option_name2 = "project_uuid_2"
+var project_uuid_option_name3 = "project_uuid_3"
 var VoteCommand = discordgo.ApplicationCommand{
 	Name:        "vote",
 	Description: "Vote your favorite project",
@@ -13,7 +15,19 @@ var VoteCommand = discordgo.ApplicationCommand{
 
 		{
 			Type:        discordgo.ApplicationCommandOptionString,
-			Name:        project_uuid_option_name,
+			Name:        project_uuid_option_name1,
+			Description: "Project ID (Should be a valid UUID)",
+			Required:    true,
+		},
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        project_uuid_option_name2,
+			Description: "Project ID (Should be a valid UUID)",
+			Required:    true,
+		},
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        project_uuid_option_name3,
 			Description: "Project ID (Should be a valid UUID)",
 			Required:    true,
 		},
@@ -33,18 +47,58 @@ func VoteCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	// This example stores the provided arguments in an []interface{}
 	// which will be used to format the bot's response
 	message := ""
-
+	allOptionsIsOk := true
+	optionsValue := []string{}
 	// Get the value from the option map.
 	// When the option exists, ok = true
-	if option, ok := optionMap[project_uuid_option_name]; ok {
+	if option, ok := optionMap[project_uuid_option_name1]; ok {
 		// Option values must be type asserted from interface{}.
 		// Discordgo provides utility functions to make this simple.
 		optionValue := option.StringValue()
 
 		if !isValidUUID(optionValue) {
-			message = "You are not enter a valid Project ID"
+			message += "The Project ID " + optionValue + "isn't a valid ID. \n"
+			allOptionsIsOk = false
 		} else {
-			message = "You are vote the project " + optionValue + ". The new total amount of votes for the project is 1."
+			optionsValue = append(optionsValue, optionValue)
+		}
+	}
+
+	if option, ok := optionMap[project_uuid_option_name2]; ok {
+		// Option values must be type asserted from interface{}.
+		// Discordgo provides utility functions to make this simple.
+		optionValue := option.StringValue()
+
+		if !isValidUUID(optionValue) {
+			message += "The Project ID " + optionValue + "isn't a valid ID. \n"
+			allOptionsIsOk = false
+		} else if contains(optionsValue, optionValue) {
+			message += "You cannot repeat the project ID " + optionValue + ". Enter other Project ID\n"
+			allOptionsIsOk = false
+		} else {
+			optionsValue = append(optionsValue, optionValue)
+		}
+	}
+
+	if option, ok := optionMap[project_uuid_option_name3]; ok {
+		// Option values must be type asserted from interface{}.
+		// Discordgo provides utility functions to make this simple.
+		optionValue := option.StringValue()
+
+		if !isValidUUID(optionValue) {
+			message += "The Project ID " + optionValue + " isn't a valid ID. \n"
+			allOptionsIsOk = false
+		} else if contains(optionsValue, optionValue) {
+			message += "You cannot repeat the project ID " + optionValue + ". Enter other Project ID\n"
+			allOptionsIsOk = false
+		} else {
+			optionsValue = append(optionsValue, optionValue)
+		}
+	}
+
+	if allOptionsIsOk {
+		for _, value := range optionsValue {
+			message += "You are vote the project " + value + ". The new total amount of votes for the project is 1\n"
 		}
 	}
 
