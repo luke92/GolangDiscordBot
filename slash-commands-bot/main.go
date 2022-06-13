@@ -7,6 +7,7 @@ import (
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/luke92/GolangDiscordBot/slash-commands-bot/command"
 )
 
 // Bot parameters
@@ -18,24 +19,15 @@ var (
 
 var (
 	commands = []*discordgo.ApplicationCommand{
-		{
-			Name: "basic-command",
-			// All commands and options must have a description
-			// Commands/options without description will fail the registration
-			// of the command.
-			Description: "Basic command",
-		},
+		&command.VoteCommand,
+		&command.ProjectCommand,
+		&command.LeaderboardCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"basic-command": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: "Hey there! Congratulations, you just executed your first slash command",
-				},
-			})
-		},
+		command.VoteCommand.Name:        command.VoteCommandHandler,
+		command.ProjectCommand.Name:     command.ProjectCommandHandler,
+		command.LeaderboardCommand.Name: command.LeaderboardCommandHandler,
 	}
 )
 
