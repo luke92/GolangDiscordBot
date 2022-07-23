@@ -27,7 +27,7 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 
 	Var("Options", options)
-
+	Var("User", i.Interaction.Member)
 	message := fmt.Sprintln("Called by User Id:", i.Interaction.Member.User.ID)
 	message += fmt.Sprintln("Username:", i.Interaction.Member.User.String())
 
