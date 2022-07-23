@@ -1,7 +1,10 @@
 package command
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -23,9 +26,10 @@ var UserCommand = discordgo.ApplicationCommand{
 func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	options := i.ApplicationCommandData().Options
 
-	log.Println(options)
+	Var("Options", options)
 
-	message := "User command"
+	message := fmt.Sprintln("Called by User Id:", i.Interaction.Member.User.ID)
+	message += fmt.Sprintln("Username:", i.Interaction.Member.User.String())
 
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -33,4 +37,9 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			Content: message,
 		},
 	})
+}
+
+func Var(name string, any any) {
+	json, _ := json.Marshal(any)
+	log.Printf("%s: %s", strings.ToUpper(name), json)
 }
