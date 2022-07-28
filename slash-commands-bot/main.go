@@ -111,7 +111,7 @@ func runBot() {
 }
 
 func main() {
-
+	command.GuildID = *GuildID
 	login()
 
 	openSession()
