@@ -52,7 +52,7 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	message += getMessageDataFromUser(s, "Sender User", senderUserID, roleIDs)
 	message += getMessageDataFromUser(s, "Receiver User", receiverUserID, roleIDs)
 
-	printMessage(s, i, message)
+	printMessage(s, i, message, true)
 
 }
 
@@ -105,12 +105,15 @@ func Var(name string, any any) {
 	log.Printf("%s: %s", strings.ToUpper(name), json)
 }
 
-func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message string) {
+func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message string, isPrivate bool) {
+	var flag uint64
+	if isPrivate {
+		flag = uint64(discordgo.MessageFlagsEphemeral)
+	}
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			//PRIVATE MESSAGE
-			Flags:   uint64(discordgo.MessageFlagsEphemeral),
+			Flags:   flag,
 			Content: message,
 		},
 	})
