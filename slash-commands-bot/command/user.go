@@ -14,6 +14,7 @@ var (
 	GuildID      string
 	dmPermission = true //If is false Only appear the command for a Admin User
 	//defaultMemberPermissions int64 = discordgo.PermissionManageServer
+	zero, _ = getFloatValue("0")
 )
 
 var UserCommand = discordgo.ApplicationCommand{
@@ -70,6 +71,10 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	Var("Amount", amountFloat)
 	if err != nil {
 		message += fmt.Sprintln("Error parsing Amount: ", err)
+	} else {
+		if isLessThanZero(amountFloat) {
+			message += fmt.Sprintln("Amount cannot be less than 0")
+		}
 	}
 
 	printMessage(s, i, message, true)
@@ -78,6 +83,10 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 func getFloatValue(value string) (*big.Float, error) {
 	decimalValue, _, err := new(big.Float).Parse(value, 10)
 	return decimalValue, err
+}
+
+func isLessThanZero(value *big.Float) bool {
+	return value.Cmp(zero) < 1
 }
 
 func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string, roleIDs []string) string {
