@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/big"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -26,6 +27,12 @@ var UserCommand = discordgo.ApplicationCommand{
 			Description: "User from server",
 			Required:    true,
 		},
+		{
+			Type:        discordgo.ApplicationCommandOptionString,
+			Name:        "amount",
+			Description: "Amount",
+			Required:    true,
+		},
 	},
 	DefaultPermission: &dmPermission,
 }
@@ -40,20 +47,37 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	roles := getRoles(s)
 
 	receiverUserID := ""
+	amountStr := ""
+
 	senderUserID := member.User.ID
 	for _, o := range options {
 		if o.Name == "user" {
 			Var("Receiver User Option", o)
 			receiverUserID = o.Value.(string)
 		}
+
+		if o.Name == "amount" {
+			amountStr = o.StringValue()
+		}
 	}
 
 	roleIDs := getRoleIDs(roles)
 	message += getMessageDataFromUser(s, "Sender User", senderUserID, roleIDs)
 	message += getMessageDataFromUser(s, "Receiver User", receiverUserID, roleIDs)
+	message += fmt.Sprintln("Amount: ", amountStr)
+
+	amountFloat, err := getFloatValue(amountStr)
+	Var("Amount", amountFloat)
+	if err != nil {
+		message += fmt.Sprintln("Error parsing Amount: ", err)
+	}
 
 	printMessage(s, i, message, true)
+}
 
+func getFloatValue(value string) (*big.Float, error) {
+	decimalValue, _, err := new(big.Float).Parse(value, 10)
+	return decimalValue, err
 }
 
 func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string, roleIDs []string) string {
