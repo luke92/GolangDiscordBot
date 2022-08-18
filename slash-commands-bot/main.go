@@ -22,14 +22,16 @@ var (
 		&command.VoteCommand,
 		&command.ProjectCommand,
 		&command.GrantRoleCommand,
+		&command.RemoveRoleCommand,
 		&command.UserCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		command.VoteCommand.Name:      command.VoteCommandHandler,
-		command.ProjectCommand.Name:   command.ProjectCommandHandler,
-		command.GrantRoleCommand.Name: command.GrantRoleCommandHandler,
-		command.UserCommand.Name:      command.UserCommandHandler,
+		command.VoteCommand.Name:       command.VoteCommandHandler,
+		command.ProjectCommand.Name:    command.ProjectCommandHandler,
+		command.GrantRoleCommand.Name:  command.GrantRoleCommandHandler,
+		command.RemoveRoleCommand.Name: command.RemoveRoleCommandHandler,
+		command.UserCommand.Name:       command.UserCommandHandler,
 	}
 )
 

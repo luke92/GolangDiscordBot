@@ -18,7 +18,6 @@ var UserCommand = discordgo.ApplicationCommand{
 	Name:        "user",
 	Description: "Show information about user",
 	Options: []*discordgo.ApplicationCommandOption{
-
 		{
 			Type:        discordgo.ApplicationCommandOptionUser,
 			Name:        "user",

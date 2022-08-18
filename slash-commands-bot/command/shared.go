@@ -2,6 +2,7 @@ package command
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
 
@@ -81,4 +82,36 @@ func getRoles(s *discordgo.Session) []*discordgo.Role {
 		return roles
 	}
 	return []*discordgo.Role{}
+}
+
+func addRole(s *discordgo.Session, roleID string, userID string) string {
+	err := s.GuildMemberRoleAdd(GuildID, userID, roleID)
+	if err != nil {
+		return fmt.Sprintln("Error adding role: ", err.Error())
+	}
+
+	roleName := roleID
+	role, err := s.State.Role(GuildID, roleID)
+	if err != nil {
+		Var("Error getting role", err)
+	} else {
+		roleName = role.Name
+	}
+	return fmt.Sprintln("Role ", roleName, " added succesfully")
+}
+
+func removeRole(s *discordgo.Session, roleID string, userID string) string {
+	err := s.GuildMemberRoleRemove(GuildID, userID, roleID)
+	if err != nil {
+		return fmt.Sprintln("Error removing role: ", err.Error())
+	}
+
+	roleName := roleID
+	role, err := s.State.Role(GuildID, roleID)
+	if err != nil {
+		Var("Error getting role", err)
+	} else {
+		roleName = role.Name
+	}
+	return fmt.Sprintln("Role ", roleName, " removed succesfully")
 }
