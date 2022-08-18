@@ -60,20 +60,5 @@ func ProjectCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 		message = Projects[0]
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: message,
-		},
-	})
-}
-
-func contains(s []string, str string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
-	}
-
-	return false
+	printMessage(s, i, message, false)
 }

@@ -2,7 +2,6 @@ package command
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/google/uuid"
 )
 
 var project_uuid_option_name1 = "project_uuid_1"
@@ -88,12 +87,7 @@ func VoteCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		}
 	}
 
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Content: message,
-		},
-	})
+	printMessage(s, i, message, false)
 }
 
 func validateOption(value string, optionsValue []string) (string, bool) {
@@ -106,9 +100,4 @@ func validateOption(value string, optionsValue []string) (string, bool) {
 	} else {
 		return "", true
 	}
-}
-
-func isValidUUID(u string) bool {
-	_, err := uuid.Parse(u)
-	return err == nil
 }

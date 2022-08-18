@@ -1,11 +1,8 @@
 package command
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"math/big"
-	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -112,63 +109,4 @@ func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string
 		message += fmt.Sprintln("Count of roles in the server:", len(intersectionRoles))
 	}
 	return message
-}
-
-func getRoleIDs(roles []*discordgo.Role) []string {
-	roleIDs := []string{}
-	for _, role := range roles {
-		roleIDs = append(roleIDs, role.ID)
-	}
-	return roleIDs
-}
-
-func getRoles(s *discordgo.Session) []*discordgo.Role {
-	roles, err := s.GuildRoles(GuildID)
-	if err != nil {
-		Var("Roles Error", err)
-	} else {
-		Var("Roles", roles)
-		return roles
-	}
-	return []*discordgo.Role{}
-}
-
-func Var(name string, any any) {
-	json, _ := json.Marshal(any)
-	log.Printf("%s: %s", strings.ToUpper(name), json)
-}
-
-func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message string, isPrivate bool) {
-	var flag uint64
-	if isPrivate {
-		flag = uint64(discordgo.MessageFlagsEphemeral)
-	}
-	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{
-			Flags:   flag,
-			Content: message,
-		},
-	})
-}
-
-func intersectionArraysString(a, b []string) []string {
-	var s []string
-
-	for _, m := range a {
-
-		ok := false
-		for _, n := range b {
-			if m == n {
-				ok = true
-				break
-			}
-		}
-		if ok {
-			s = append(s, m)
-		}
-
-	}
-
-	return s
 }
