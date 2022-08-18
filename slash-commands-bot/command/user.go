@@ -107,6 +107,13 @@ func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string
 		Var(fromUser+" Guild Member", &guildMember)
 		intersectionRoles := intersectionArraysString(roleIDs, guildMember.Roles)
 		message += fmt.Sprintln("Count of roles in the server:", len(intersectionRoles))
+
+		hasRoleVerifiedTeen := contains(guildMember.Roles, RoleVerifiedTeen)
+		if hasRoleVerifiedTeen {
+			message += fmt.Sprintln("User is a Verified Teen")
+		} else {
+			message += fmt.Sprintln("User is NOT a Verified Teen")
+		}
 	}
 	return message
 }
