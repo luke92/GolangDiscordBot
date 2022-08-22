@@ -115,3 +115,18 @@ func removeRole(s *discordgo.Session, roleID string, userID string) string {
 	}
 	return fmt.Sprintln("Role ", roleName, " removed succesfully")
 }
+
+func sendDMMessage(s *discordgo.Session, i *discordgo.InteractionCreate, userID string, content string) {
+	channel, err := s.UserChannelCreate(userID)
+	if err != nil {
+		Var("Error Creating Channel", err)
+	}
+
+	message, err := s.ChannelMessageSend(channel.ID, content)
+	if err != nil {
+		Var("error sending DM message", err)
+		printMessage(s, i, "Failed to send you a DM. Did you disable DM in your privacy settings?", true)
+	}
+
+	Var("DM Message", message)
+}
