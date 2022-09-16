@@ -24,14 +24,16 @@ var (
 		&command.GrantRoleCommand,
 		&command.RemoveRoleCommand,
 		&command.UserCommand,
+		&command.DynamicRoleUserCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		command.VoteCommand.Name:       command.VoteCommandHandler,
-		command.ProjectCommand.Name:    command.ProjectCommandHandler,
-		command.GrantRoleCommand.Name:  command.GrantRoleCommandHandler,
-		command.RemoveRoleCommand.Name: command.RemoveRoleCommandHandler,
-		command.UserCommand.Name:       command.UserCommandHandler,
+		command.VoteCommand.Name:            command.VoteCommandHandler,
+		command.ProjectCommand.Name:         command.ProjectCommandHandler,
+		command.GrantRoleCommand.Name:       command.GrantRoleCommandHandler,
+		command.RemoveRoleCommand.Name:      command.RemoveRoleCommandHandler,
+		command.UserCommand.Name:            command.UserCommandHandler,
+		command.DynamicRoleUserCommand.Name: command.DynamicRoleUserCommandHandler,
 	}
 )
 
@@ -95,6 +97,7 @@ func runBot() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
 	log.Println("Press Ctrl+C to exit")
+
 	<-stop
 
 	if *RemoveCommands {

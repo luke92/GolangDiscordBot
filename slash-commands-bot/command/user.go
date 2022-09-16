@@ -35,13 +35,15 @@ var UserCommand = discordgo.ApplicationCommand{
 }
 
 func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	options := i.ApplicationCommandData().Options
 	message := ""
-
+	options := i.ApplicationCommandData().Options
 	Var("Options", options)
+
 	member := i.Interaction.Member
 	Var("User", member)
+
 	roles := getRoles(s)
+	Var("Roles", roles)
 
 	receiverUserID := ""
 	amountStr := ""
@@ -116,5 +118,6 @@ func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string
 			message += fmt.Sprintln("User is NOT a Verified Teen")
 		}
 	}
+
 	return message
 }

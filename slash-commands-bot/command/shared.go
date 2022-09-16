@@ -75,13 +75,12 @@ func getRoleIDs(roles []*discordgo.Role) []string {
 
 func getRoles(s *discordgo.Session) []*discordgo.Role {
 	roles, err := s.GuildRoles(GuildID)
+
 	if err != nil {
 		Var("Roles Error", err)
-	} else {
-		Var("Roles", roles)
-		return roles
 	}
-	return []*discordgo.Role{}
+
+	return roles
 }
 
 func addRole(s *discordgo.Session, roleID string, userID string) string {
