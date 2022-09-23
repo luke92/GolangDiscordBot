@@ -53,7 +53,7 @@ func DynamicRoleUserCommandHandler(s *discordgo.Session, i *discordgo.Interactio
 
 func getDynamicRole(s *discordgo.Session) (*discordgo.Role, error) {
 	var err error
-	roleName := getRoleNameOfTheDay()
+	roleName := getRoleNameOfTheWeek()
 	roles := getRoles(s)
 
 	role := getRole(roleName, roles)
@@ -82,16 +82,10 @@ func getDynamicRole(s *discordgo.Session) (*discordgo.Role, error) {
 	return role, nil
 }
 
-func getRoleNameOfTheDay() string {
+func getRoleNameOfTheWeek() string {
 	today := time.Now()
-	year := today.Year()
-	month := today.Month()
-	day := today.Day()
-
-	yearStr := fmt.Sprint(year)
-	yearStr = yearStr[len(yearStr)-2:]
-
-	name := fmt.Sprintf("Auto-%s%02d%02d", yearStr, month, day)
+	year, week := today.ISOWeek()
+	name := fmt.Sprintf("VW%d%02d", year, week)
 
 	return name
 }
