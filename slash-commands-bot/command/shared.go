@@ -83,6 +83,16 @@ func getRoles(s *discordgo.Session) []*discordgo.Role {
 	return roles
 }
 
+func getRoleById(s *discordgo.Session, roleID string) (*discordgo.Role, error) {
+	role, err := s.State.Role(GuildID, roleID)
+	if err != nil {
+		Var("Error getting role", err)
+		return nil, err
+	}
+
+	return role, nil
+}
+
 func addRole(s *discordgo.Session, roleID string, userID string) string {
 	err := s.GuildMemberRoleAdd(GuildID, userID, roleID)
 	if err != nil {
@@ -90,12 +100,12 @@ func addRole(s *discordgo.Session, roleID string, userID string) string {
 	}
 
 	roleName := roleID
-	role, err := s.State.Role(GuildID, roleID)
-	if err != nil {
-		Var("Error getting role", err)
-	} else {
+
+	role, err := getRoleById(s, roleID)
+	if err == nil {
 		roleName = role.Name
 	}
+
 	return fmt.Sprintln("Role ", roleName, " added succesfully")
 }
 
@@ -128,4 +138,28 @@ func sendDMMessage(s *discordgo.Session, i *discordgo.InteractionCreate, userID 
 	}
 
 	Var("DM Message", message)
+}
+
+func getMembers(s *discordgo.Session) ([]*discordgo.Member, error) {
+	maxLimitMembers := 1000
+	lastMemberID := ""
+	membersReturn := []*discordgo.Member{}
+
+	for {
+		members, err := s.GuildMembers(GuildID, lastMemberID, maxLimitMembers)
+		if err != nil {
+			Var("Error get Members", err)
+			return membersReturn, err
+		}
+
+		membersReturn = append(membersReturn, members...)
+
+		if len(members) < maxLimitMembers {
+			break
+		}
+
+		lastMemberID = members[len(members)-1].User.ID
+	}
+
+	return membersReturn, nil
 }

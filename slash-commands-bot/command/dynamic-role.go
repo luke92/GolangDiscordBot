@@ -56,7 +56,7 @@ func getDynamicRole(s *discordgo.Session) (*discordgo.Role, error) {
 	roleName := getRoleNameOfTheWeek()
 	roles := getRoles(s)
 
-	role := getRole(roleName, roles)
+	role := getRoleByName(roleName, roles)
 
 	if role == nil {
 		role, err = s.GuildRoleCreate(GuildID)
@@ -90,7 +90,7 @@ func getRoleNameOfTheWeek() string {
 	return name
 }
 
-func getRole(roleName string, roles []*discordgo.Role) *discordgo.Role {
+func getRoleByName(roleName string, roles []*discordgo.Role) *discordgo.Role {
 	for _, role := range roles {
 		if role.Name == roleName {
 			return role

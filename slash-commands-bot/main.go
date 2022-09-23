@@ -25,6 +25,7 @@ var (
 		&command.RemoveRoleCommand,
 		&command.UserCommand,
 		&command.DynamicRoleUserCommand,
+		&command.CountRolesCommand,
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
@@ -34,6 +35,7 @@ var (
 		command.RemoveRoleCommand.Name:      command.RemoveRoleCommandHandler,
 		command.UserCommand.Name:            command.UserCommandHandler,
 		command.DynamicRoleUserCommand.Name: command.DynamicRoleUserCommandHandler,
+		command.CountRolesCommand.Name:      command.CountRolesCommandHandler,
 	}
 )
 
