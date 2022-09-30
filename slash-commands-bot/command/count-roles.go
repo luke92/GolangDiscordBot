@@ -55,6 +55,8 @@ func CountRolesCommandHandler(s *discordgo.Session, i *discordgo.InteractionCrea
 		return
 	}
 
+	Var("Count Members", len(members))
+
 	for _, role := range roles {
 		message += fmt.Sprintf("Role Name: %s\n", role.Name)
 		count := 0
