@@ -50,15 +50,33 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 						URL:         "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
 						Type:        discordgo.EmbedTypeImage,
 						Title:       "Ultron",
-						Description: message,
+						Description: fmt.Sprintf("**%s**", message),
 						Image: &discordgo.MessageEmbedImage{
 							URL:      "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
 							Width:    100,
 							Height:   100,
 							ProxyURL: "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
 						},
+						Fields: []*discordgo.MessageEmbedField{
+							{
+								Name:   "name 1",
+								Value:  "Value 1",
+								Inline: false,
+							},
+							{
+								Name:   "name 2",
+								Value:  "Value 2",
+								Inline: true,
+							},
+							{
+								Name:   "name 3",
+								Value:  "Value 3",
+								Inline: true,
+							},
+						},
 					},
-				},*/
+				},
+			*/
 			Flags:   flag,
 			Content: message,
 		},
