@@ -99,6 +99,7 @@ func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string
 		message += fmt.Sprintln("----------------")
 		message += fmt.Sprintln(fromUser)
 		message += fmt.Sprintln("----------------")
+		message += fmt.Sprintf("<@%s>\n", userID)
 		message += fmt.Sprintln("User Id:", userID)
 		message += fmt.Sprintln("Username:", user.String())
 		message += fmt.Sprintln("IsBot:", user.Bot)
