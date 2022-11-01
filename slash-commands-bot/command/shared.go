@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -41,42 +42,52 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 	if isPrivate {
 		flag = uint64(discordgo.MessageFlagsEphemeral)
 	}
+
+	png, _ := os.Open("image.png")
+
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			/*
-				Embeds: []*discordgo.MessageEmbed{
-					{
-						URL:         "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
-						Type:        discordgo.EmbedTypeImage,
-						Title:       "Ultron",
-						Description: fmt.Sprintf("**%s**", message),
-						Image: &discordgo.MessageEmbedImage{
-							URL:      "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
-							Width:    100,
-							Height:   100,
-							ProxyURL: "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
+			Files: []*discordgo.File{
+				{
+					Name:        "image.png",
+					ContentType: "image/png",
+					Reader:      png,
+				},
+			},
+
+			Embeds: []*discordgo.MessageEmbed{
+				{
+					URL:         "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
+					Type:        discordgo.EmbedTypeImage,
+					Title:       "Ultron",
+					Description: fmt.Sprintf("**%s**", message),
+					Image: &discordgo.MessageEmbedImage{
+						URL:      "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
+						Width:    100,
+						Height:   100,
+						ProxyURL: "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
+					},
+					Fields: []*discordgo.MessageEmbedField{
+						{
+							Name:   "name 1",
+							Value:  "Value 1",
+							Inline: false,
 						},
-						Fields: []*discordgo.MessageEmbedField{
-							{
-								Name:   "name 1",
-								Value:  "Value 1",
-								Inline: false,
-							},
-							{
-								Name:   "name 2",
-								Value:  "Value 2",
-								Inline: true,
-							},
-							{
-								Name:   "name 3",
-								Value:  "Value 3",
-								Inline: true,
-							},
+						{
+							Name:   "name 2",
+							Value:  "Value 2",
+							Inline: true,
+						},
+						{
+							Name:   "name 3",
+							Value:  "Value 3",
+							Inline: true,
 						},
 					},
 				},
-			*/
+			},
+
 			Flags:   flag,
 			Content: message,
 		},
