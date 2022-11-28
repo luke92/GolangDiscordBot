@@ -3,7 +3,9 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -43,17 +45,19 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 		flag = uint64(discordgo.MessageFlagsEphemeral)
 	}
 
-	png, _ := os.Open("image.png")
+	pngFromFile, _ := getImageFile("image.png")
+	fileImageURL := getFileImageURL("https://www.kindpng.com/picc/m/199-1998580_5-dollars-hd-png-download.png")
 
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Files: []*discordgo.File{
 				{
-					Name:        "image.png",
+					Name:        "image1.png",
 					ContentType: "image/png",
-					Reader:      png,
+					Reader:      pngFromFile,
 				},
+				fileImageURL,
 			},
 
 			Embeds: []*discordgo.MessageEmbed{
@@ -76,7 +80,7 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 						},
 						{
 							Name:   "name 2",
-							Value:  "Value 2",
+							Value:  "value 2",
 							Inline: true,
 						},
 						{
@@ -92,6 +96,39 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 			Content: message,
 		},
 	})
+}
+
+func getImageFile(filePath string) (io.Reader, error) {
+	f, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return f, nil
+}
+
+func getFileImageURL(url string) *discordgo.File {
+	method := "GET"
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return &discordgo.File{
+		Name:        "image2.png",
+		ContentType: "image/png",
+		Reader:      res.Body,
+	}
 }
 
 func contains(s []string, str string) bool {
