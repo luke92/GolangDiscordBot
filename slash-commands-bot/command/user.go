@@ -103,6 +103,12 @@ func getMessageDataFromUser(s *discordgo.Session, fromUser string, userID string
 		message += fmt.Sprintln("User Id:", userID)
 		message += fmt.Sprintln("Username:", user.String())
 		message += fmt.Sprintln("IsBot:", user.Bot)
+		createdDate, err := discordgo.SnowflakeTimestamp(userID)
+		if err != nil {
+			message += fmt.Sprintln("Created Date Error: ", err.Error())
+		} else {
+			message += fmt.Sprintln("Created Date: ", createdDate)
+		}
 	}
 	guildMember, err := s.GuildMember(GuildID, userID)
 	if err != nil {
