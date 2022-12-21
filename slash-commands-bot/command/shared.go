@@ -45,6 +45,21 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 		flag = uint64(discordgo.MessageFlagsEphemeral)
 	}
 
+	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Flags:   flag,
+			Content: message,
+		},
+	})
+}
+
+func printMessageEmbed(s *discordgo.Session, i *discordgo.InteractionCreate, message string, isPrivate bool) {
+	var flag uint64
+	if isPrivate {
+		flag = uint64(discordgo.MessageFlagsEphemeral)
+	}
+
 	pngFromFile, _ := getImageFile("image.png")
 	fileImageURL := getFileImageURL("https://www.kindpng.com/picc/m/199-1998580_5-dollars-hd-png-download.png")
 
@@ -59,9 +74,17 @@ func printMessage(s *discordgo.Session, i *discordgo.InteractionCreate, message 
 				},
 				fileImageURL,
 			},
-
 			Embeds: []*discordgo.MessageEmbed{
 				{
+					Color: 39423,
+					Footer: &discordgo.MessageEmbedFooter{
+						IconURL: "https://i.imgur.com/AfFp7pu.png",
+						Text:    "Daily",
+					},
+					Author: &discordgo.MessageEmbedAuthor{
+						Name:    i.Member.User.String(),
+						IconURL: "https://i.imgur.com/AfFp7pu.png",
+					},
 					URL:         "https://w7.pngwing.com/pngs/737/804/png-transparent-ultron-logo-marvel-comics-chitauri-hydra-ultron-face-fictional-characters-head.png",
 					Type:        discordgo.EmbedTypeImage,
 					Title:       "Ultron",

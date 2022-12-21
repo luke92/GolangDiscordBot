@@ -75,7 +75,7 @@ func UserCommandHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		}
 	}
 
-	printMessage(s, i, message, true)
+	printMessageEmbed(s, i, message, true)
 	sendDMMessage(s, i, senderUserID, "You send "+amountStr+" MBX to the user "+receiverUserID)
 	sendDMMessage(s, i, receiverUserID, "You receive "+amountStr+" MBX from the user "+senderUserID)
 }

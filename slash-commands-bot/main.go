@@ -24,6 +24,7 @@ var (
 		&command.GrantRoleCommand,
 		&command.RemoveRoleCommand,
 		&command.UserCommand,
+		&command.DailyCommand,
 		&command.DynamicRoleUserCommand,
 		&command.CountRolesCommand,
 	}
@@ -34,6 +35,7 @@ var (
 		command.GrantRoleCommand.Name:       command.GrantRoleCommandHandler,
 		command.RemoveRoleCommand.Name:      command.RemoveRoleCommandHandler,
 		command.UserCommand.Name:            command.UserCommandHandler,
+		command.DailyCommand.Name:           command.DailyCommandHandler,
 		command.DynamicRoleUserCommand.Name: command.DynamicRoleUserCommandHandler,
 		command.CountRolesCommand.Name:      command.CountRolesCommandHandler,
 	}
